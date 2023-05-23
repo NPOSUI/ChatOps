@@ -4,7 +4,7 @@ before:
 
 builds:
   - id: echo
-    main: executors/echo/main.go
+    main: external-plugins/executors/echo/main.go
     binary: executor_echo_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
@@ -12,15 +12,23 @@ builds:
       - CGO_ENABLED=0
     goos: &goos
       - linux
-      - darwin
     goarch: &goarch
       - amd64
-      - arm64
     goarm: &goarm
       - 7
 
-  - id: ticker
-    main: sources/ticker/main.go
+  - id: tracker
+    main: external-plugins/sources/tracker/main.go
+    binary: source_tracker_{{ .Os }}_{{ .Arch }}
+
+    no_unique_dist_dir: true
+    env: *env
+    goos: *goos
+    goarch: *goarch
+    goarm: *goarm
+
+  - id: auth
+    main: external-plugins/executors/auth/main.go
     binary: source_ticker_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
@@ -30,7 +38,7 @@ builds:
     goarm: *goarm
 
 snapshot:
-  name_template: 'v{{ .Version }}'
+  name_template: 'v1.0'
 
 
 release:
