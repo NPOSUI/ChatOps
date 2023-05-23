@@ -29,7 +29,7 @@ builds:
 
   - id: auth
     main: botkube/external-plugins/executors/auth/main.go
-    binary: source_auth_{{ .Os }}_{{ .Arch }}
+    binary: executor_auth_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
     env: *env
