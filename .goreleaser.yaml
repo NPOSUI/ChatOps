@@ -4,7 +4,7 @@ before:
 
 builds:
   - id: echo
-    main: external-plugins/executors/echo/main.go
+    main: botkube/external-plugins/executors/echo/main.go
     binary: executor_echo_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
@@ -18,7 +18,7 @@ builds:
       - 7
 
   - id: tracker
-    main: external-plugins/sources/tracker/main.go
+    main: botkube/external-plugins/sources/tracker/main.go
     binary: source_tracker_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
@@ -28,7 +28,7 @@ builds:
     goarm: *goarm
 
   - id: auth
-    main: external-plugins/executors/auth/main.go
+    main: botkube/external-plugins/executors/auth/main.go
     binary: source_ticker_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
