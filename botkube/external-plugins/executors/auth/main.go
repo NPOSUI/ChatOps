@@ -59,7 +59,7 @@ func (e *EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (exe
 	}
 
 	return executor.ExecuteOutput{
-		Data: data,
+		//Data: data,
 		Message: api.Message{
 			Sections: []api.Section{
 				{
