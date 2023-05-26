@@ -74,7 +74,7 @@ func (e *EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (exe
 				{
 					Base: api.Base{
 						Header:      "This a stupid test for multiselect",
-						Description: "Number 1, this is a xxx multiselect!",
+						Description: "Number 1, this is a xxx multiselect!!",
 					},
 					MultiSelect: api.MultiSelect{
 						Name: "multi select t1",
