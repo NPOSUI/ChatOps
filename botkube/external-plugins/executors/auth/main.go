@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/hashicorp/go-plugin"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
 	"github.com/kubeshop/botkube/pkg/pluginx"
@@ -58,166 +59,169 @@ func (e *EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (exe
 		data = strings.ToUpper(data)
 	}
 
-	return executor.ExecuteOutput{
-		//Data: data,
-		Message: api.Message{
-			Sections: []api.Section{
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for button",
-						Description: "Number 1, this is a danger button!",
-					},
-					Buttons: []api.Button{
-						e.btnBuilder.ForCommandWithDescCmd("echo", "echo", api.ButtonStyleDanger),
-					},
+	out := api.Message{
+		Sections: []api.Section{
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for button",
+					Description: "Number 1, this is a danger button!",
 				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for multiselect",
-						Description: "Number 1, this is a xxx multiselect!!",
-					},
-					MultiSelect: api.MultiSelect{
-						Name: "multi select t1",
-						Description: api.Body{
-							CodeBlock: "c1",
-							Plaintext: "p1",
-						},
-						Command: "echo",
-						Options: []api.OptionItem{
-							{
-								Name:  "on1",
-								Value: "ov1",
-							},
-							{
-								Name:  "on2",
-								Value: "ov2",
-							},
-						},
-						InitialOptions: []api.OptionItem{
-							{
-								Name:  "on11",
-								Value: "ov11",
-							},
-							{
-								Name:  "on22",
-								Value: "ov22",
-							},
-						},
-					},
+				Buttons: []api.Button{
+					e.btnBuilder.ForCommandWithDescCmd("echo", "echo", api.ButtonStyleDanger),
 				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for selects",
-						Description: "Number 4, this is a xxx selects!",
-					},
-					Selects: api.Selects{
-						ID: "S1",
-						Items: []api.Select{
-							{
-								Type:    api.StaticSelect,
-								Name:    "si1",
-								Command: "echo",
-								OptionGroups: []api.OptionGroup{
-									{
-										Name: "sio1",
-										Options: []api.OptionItem{
-											{
-												Name:  "sioon1",
-												Value: "sioov1",
-											},
-											{
-												Name:  "sioon2",
-												Value: "sioov2",
-											},
-										},
-									},
-								},
-								InitialOption: &api.OptionItem{
-									Name:  "siin1",
-									Value: "siin1",
-								},
-							},
-							{
-								Type:    api.ExternalSelect,
-								Name:    "si2",
-								Command: "echo",
-							},
-						},
-					},
+			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for multiselect",
+					Description: "Number 1, this is a xxx multiselect!!",
 				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for PlaintextInputs",
-						Description: "Number 5, this is a xxxx PlaintextInputs!",
+				MultiSelect: api.MultiSelect{
+					Name: "multi select t1",
+					Description: api.Body{
+						CodeBlock: "c1",
+						Plaintext: "p1",
 					},
-					PlaintextInputs: []api.LabelInput{
+					Command: "echo",
+					Options: []api.OptionItem{
 						{
-							Command:          "echo",
-							Text:             "plt1",
-							Placeholder:      "plp1",
-							DispatchedAction: api.NoDispatchInputAction,
+							Name:  "on1",
+							Value: "ov1",
 						},
 						{
-							Command:          "echo",
-							Text:             "plt2",
-							Placeholder:      "plp2",
-							DispatchedAction: api.DispatchInputActionOnEnter,
-						},
-						{
-							Command:          "echo",
-							Text:             "plt3",
-							Placeholder:      "plp3",
-							DispatchedAction: api.DispatchInputActionOnCharacter,
+							Name:  "on2",
+							Value: "ov2",
 						},
 					},
-				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for TextFields",
-						Description: "Number 1, this is a xxx TextFields!",
-					},
-					TextFields: []api.TextField{
+					InitialOptions: []api.OptionItem{
 						{
-							Key:   "ttk1",
-							Value: "ttv1",
+							Name:  "on11",
+							Value: "ov11",
 						},
 						{
-							Key:   "ttk2",
-							Value: "ttv2",
-						},
-					},
-				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for BulletLists",
-						Description: "Number 4, this is a xxx BulletLists!",
-					},
-					BulletLists: []api.BulletList{
-						{
-							Title: "bbt1",
-							Items: []string{
-								"bbi1",
-								"bbi2",
-							},
-						},
-					},
-				},
-				{
-					Base: api.Base{
-						Header:      "This a stupid test for Context",
-						Description: "Number !, this is a xxx Context!",
-					},
-					Context: []api.ContextItem{
-						{
-							Text: "cct1",
-						},
-						{
-							Text: "cct2",
+							Name:  "on22",
+							Value: "ov22",
 						},
 					},
 				},
 			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for selects",
+					Description: "Number 4, this is a xxx selects!",
+				},
+				Selects: api.Selects{
+					ID: "S1",
+					Items: []api.Select{
+						{
+							Type:    api.StaticSelect,
+							Name:    "si1",
+							Command: "echo",
+							OptionGroups: []api.OptionGroup{
+								{
+									Name: "sio1",
+									Options: []api.OptionItem{
+										{
+											Name:  "sioon1",
+											Value: "sioov1",
+										},
+										{
+											Name:  "sioon2",
+											Value: "sioov2",
+										},
+									},
+								},
+							},
+							InitialOption: &api.OptionItem{
+								Name:  "siin1",
+								Value: "siin1",
+							},
+						},
+						{
+							Type:    api.ExternalSelect,
+							Name:    "si2",
+							Command: "echo",
+						},
+					},
+				},
+			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for PlaintextInputs",
+					Description: "Number 5, this is a xxxx PlaintextInputs!",
+				},
+				PlaintextInputs: []api.LabelInput{
+					{
+						Command:          "echo",
+						Text:             "plt1",
+						Placeholder:      "plp1",
+						DispatchedAction: api.NoDispatchInputAction,
+					},
+					{
+						Command:          "echo",
+						Text:             "plt2",
+						Placeholder:      "plp2",
+						DispatchedAction: api.DispatchInputActionOnEnter,
+					},
+					{
+						Command:          "echo",
+						Text:             "plt3",
+						Placeholder:      "plp3",
+						DispatchedAction: api.DispatchInputActionOnCharacter,
+					},
+				},
+			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for TextFields",
+					Description: "Number 1, this is a xxx TextFields!",
+				},
+				TextFields: []api.TextField{
+					{
+						Key:   "ttk1",
+						Value: "ttv1",
+					},
+					{
+						Key:   "ttk2",
+						Value: "ttv2",
+					},
+				},
+			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for BulletLists",
+					Description: "Number 4, this is a xxx BulletLists!",
+				},
+				BulletLists: []api.BulletList{
+					{
+						Title: "bbt1",
+						Items: []string{
+							"bbi1",
+							"bbi2",
+						},
+					},
+				},
+			},
+			{
+				Base: api.Base{
+					Header:      "This a stupid test for Context",
+					Description: "Number !, this is a xxx Context!",
+				},
+				Context: []api.ContextItem{
+					{
+						Text: "cct1",
+					},
+					{
+						Text: "cct2",
+					},
+				},
+			},
 		},
+	}
+	outStr, _ := jsoniter.Marshal(out)
+
+	return executor.ExecuteOutput{
+		//Data: data,
+		Message: api.NewCodeBlockMessage(string(outStr), true),
 	}, nil
 }
 
