@@ -9,7 +9,6 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
-	"github.com/kubeshop/botkube/pkg/bot/interactive"
 	"github.com/kubeshop/botkube/pkg/pluginx"
 	"strings"
 )
@@ -73,17 +72,11 @@ func (e *EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (exe
 			},
 		},
 	}
-	//outStr, _ := jsoniter.Marshal(out)
-
-	new_out := interactive.CoreMessage{
-		Message: out,
-	}
-
-	new_out_str, _ := jsoniter.Marshal(new_out)
+	outStr, _ := jsoniter.Marshal(out)
 
 	return executor.ExecuteOutput{
 		//Data: data,
-		Message: api.NewCodeBlockMessage(string(new_out_str), true),
+		Message: api.NewCodeBlockMessage(string(outStr), false),
 	}, nil
 }
 
