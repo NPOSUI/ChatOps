@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/MakeNowJust/heredoc"
 	"github.com/hashicorp/go-plugin"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/kubeshop/botkube/pkg/api"
 	"github.com/kubeshop/botkube/pkg/api/executor"
 	"github.com/kubeshop/botkube/pkg/pluginx"
@@ -59,24 +58,111 @@ func (e *EchoExecutor) Execute(_ context.Context, in executor.ExecuteInput) (exe
 		data = strings.ToUpper(data)
 	}
 
-	out := api.Message{
-		Sections: []api.Section{
-			{
-				Base: api.Base{
-					Header:      "This a stupid test for button",
-					Description: "Number 1, this is a danger button!",
+	cmdPrefix := func(cmd string) string {
+		return fmt.Sprintf("%s %s %s", api.MessageBotNamePlaceholder, pluginName, cmd)
+	}
+
+	secOut := []api.Section{
+		{
+			Base: api.Base{
+				Header:      "This a stupid test for button",
+				Description: "Number 1, this is a danger button!",
+			},
+			Buttons: []api.Button{
+				e.btnBuilder.ForCommandWithDescCmd("echo", "echo", api.ButtonStyleDanger),
+			},
+		},
+		{
+			Selects: api.Selects{
+				ID: "select-id",
+				Items: []api.Select{
+					{
+						Name:    "two-groups",
+						Command: cmdPrefix("selects two-groups"),
+						OptionGroups: []api.OptionGroup{
+							{
+								Name: cmdPrefix("selects two-groups/1"),
+								Options: []api.OptionItem{
+									{Name: "BAR", Value: "BAR"},
+									{Name: "BAZ", Value: "BAZ"},
+									{Name: "XYZ", Value: "XYZ"},
+								},
+							},
+							{
+								Name: cmdPrefix("selects two-groups/2"),
+								Options: []api.OptionItem{
+									{Name: "123", Value: "123"},
+									{Name: "456", Value: "456"},
+									{Name: "789", Value: "789"},
+								},
+							},
+						},
+						// MUST be defined also under OptionGroups.Options slice.
+						InitialOption: &api.OptionItem{
+							Name: "789", Value: "789",
+						},
+					},
 				},
-				Buttons: []api.Button{
-					e.btnBuilder.ForCommandWithDescCmd("echo", "echo", api.ButtonStyleDanger),
+			},
+		},
+		{
+			Base: api.Base{
+				Header:      "This a stupid test for selects",
+				Description: "Number 4, this is a xxx selects!",
+			},
+			Selects: api.Selects{
+				ID: "S1",
+				Items: []api.Select{
+					{
+						Type:    api.StaticSelect,
+						Name:    "si1",
+						Command: "echo",
+						OptionGroups: []api.OptionGroup{
+							{
+								Name: "sio1",
+								Options: []api.OptionItem{
+									{
+										Name:  "sioon1",
+										Value: "sioov1",
+									},
+									{
+										Name:  "sioon2",
+										Value: "sioov2",
+									},
+								},
+							},
+						},
+						InitialOption: &api.OptionItem{
+							Name:  "siin1",
+							Value: "siin1",
+						},
+					},
 				},
 			},
 		},
 	}
-	outStr, _ := jsoniter.Marshal(out)
+
+	//out := api.Message{
+	//	Sections: []api.Section{
+	//		{
+	//			Base: api.Base{
+	//				Header:      "This a stupid test for button",
+	//				Description: "Number 1, this is a danger button!",
+	//			},
+	//			Buttons: []api.Button{
+	//				e.btnBuilder.ForCommandWithDescCmd("echo", "echo", api.ButtonStyleDanger),
+	//			},
+	//		},
+	//	},
+	//}
+	//outStr, _ := jsoniter.Marshal(out)
 
 	return executor.ExecuteOutput{
 		//Data: data,
-		Message: api.NewCodeBlockMessage(string(outStr), false),
+		Message: api.Message{
+			Type:     api.DefaultMessage,
+			Sections: secOut,
+		},
 	}, nil
 }
 
