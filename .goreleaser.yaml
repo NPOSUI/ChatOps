@@ -3,9 +3,9 @@ before:
     - go mod download
 
 builds:
-  - id: echo
-    main: botkube/external-plugins/executors/echo/main.go
-    binary: executor_echo_{{ .Os }}_{{ .Arch }}
+  - id: auth
+    main: botkube/external-plugins/executors/auth/main.go
+    binary: executor_auth_{{ .Os }}_{{ .Arch }}
 
     no_unique_dist_dir: true
     env: &env
@@ -17,25 +17,29 @@ builds:
     goarm: &goarm
       - 7
 
-  - id: tracker
-    main: botkube/external-plugins/sources/tracker/main.go
-    binary: source_tracker_{{ .Os }}_{{ .Arch }}
-
-    no_unique_dist_dir: true
-    env: *env
-    goos: *goos
-    goarch: *goarch
-    goarm: *goarm
-
-  - id: auth
-    main: botkube/external-plugins/executors/auth/main.go
-    binary: executor_auth_{{ .Os }}_{{ .Arch }}
-
-    no_unique_dist_dir: true
-    env: *env
-    goos: *goos
-    goarch: *goarch
-    goarm: *goarm
+#  - id: echo
+#    main: botkube/external-plugins/executors/echo/main.go
+#    binary: executor_echo_{{ .Os }}_{{ .Arch }}
+#
+#    no_unique_dist_dir: true
+#    env: &env
+#      - CGO_ENABLED=0
+#    goos: &goos
+#      - linux
+#    goarch: &goarch
+#      - amd64
+#    goarm: &goarm
+#      - 7
+#
+#  - id: tracker
+#    main: botkube/external-plugins/sources/tracker/main.go
+#    binary: source_tracker_{{ .Os }}_{{ .Arch }}
+#
+#    no_unique_dist_dir: true
+#    env: *env
+#    goos: *goos
+#    goarch: *goarch
+#    goarm: *goarm
 
 snapshot:
   name_template: 'v1.0'
